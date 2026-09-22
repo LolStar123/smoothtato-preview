@@ -1,16 +1,7 @@
-# Public example provenance
+# Source and scope
 
-Prepared 22 September 2026 for Atul Kanodia's project portfolio.
+The 68 category keys, descriptions and five preset switch sets were exported from the author's BundleSmoother.Categories, Presets and Meta on 22 September 2026. Share-code encoding follows the desktop ConfigCode.cs format: R/raw or D/deflate marker, newline-separated preset-relative fields, base64url and six-bit checksum.
 
-## Original work
+The public repository contains the working browser configuration editor and source data, not the full desktop patching engine. Counts refer to categories, not measured performance. Broken lighting categories and the emitter-format no-op remain visible for source completeness but cannot be enabled through their switches.
 
-Smoothtato.App/ViewModels/MainViewModel.cs preset definitions and Smoother.Core/BundleSmoother.cs categories.
-
-## This repository's example
-
-A public preset planner using authored asset categories. It does not patch game files or measure FPS.
-
-The example was built for public inspection of the documented workflow. It is not a claim
-that the complete production application fits into this one module. Existing repository
-source retains its original history. Generated records have no customer, player, account,
-or private-message identifiers. Inputs and outputs can be exported and inspected.
+No machine paths, licences, API keys or saved private configurations are included in the exported data. Preset and switch descriptions retain the engine author's wording; availability can differ between desktop releases.

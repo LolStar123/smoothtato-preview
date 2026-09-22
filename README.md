@@ -1,43 +1,32 @@
 # smoothtato
 
-Cuts Path of Exile's visual clutter with presets that keep combat cues readable.
+A Path of Exile visual-settings planner using the desktop app's actual categories and presets.
 
-<!-- working-example:start -->
-## Try it in a minute
+**[Open the live editor](https://lolstar123.github.io/smoothtato-preview/)** | [poetato.app](https://poetato.app)
 
-**[Live example](https://lolstar123.github.io/smoothtato-preview/)** · [Example code](examples/portfolio/model.mjs) · [Run locally](examples/portfolio/README.md) · [Atul's website](https://atul-kanodia-fieldnotes.atulswaggalicious.chatgpt.site)
+Choose Performance, League Start, Barebones or Blackout. Change individual switches, compare your changes against the preset, and export a STATO1 code the desktop app can read. Original clears every removal switch. Your choices stay in this browser between visits.
 
-Compare preset changes and generate a reversible configuration plan.
+![The preset editor](examples/portfolio/preview.png)
 
-<img src="examples/portfolio/preview.png" alt="smoothtato example inputs and calculated output" width="760">
+## What is here
 
-<!-- working-example:end -->
+- 68 categories and five presets extracted from the actual engine.
+- Search, grouping and filters for enabled or modified settings.
+- Raw and compressed desktop-code import; preset-relative export with checksum.
+- Disabled controls for source categories marked broken or not implemented.
 
-## The project
+This is a configuration editor. It does not patch game files or claim measured FPS improvements. Some aggressive switches hide characters, effects or sound; read each switch before exporting. Imported skin and other advanced fields are not retained by this visual-settings editor.
 
-Choose a preset, inspect which effect categories it removes and keep the important encounter cues. Saved configurations make the changes repeatable; restoring Original brings the visuals back.
-
-Fewer particles competing with the thing about to kill you.
-
-## Find your way around
-
-| Path | What is here |
-| --- | --- |
-| [examples/portfolio](examples/portfolio) | Runnable browser example and fixtures |
-| [model.mjs](examples/portfolio/model.mjs) | Actual calculation or workflow |
-| [model.test.mjs](examples/portfolio/model.test.mjs) | Reproducible checks and edge cases |
-| [PROVENANCE.md](PROVENANCE.md) | How this example relates to the full project |
-| [AGENTS.md](AGENTS.md) | Instructions for extending the example |
-
-## Quick start
+## Run and check
 
 ```sh
 python -m http.server 8000 --directory examples/portfolio
 node --test examples/portfolio/model.test.mjs
+pip install playwright
+python -m playwright install chromium
+python tools/browser_audit.py
 ```
 
-Open http://localhost:8000. No dependencies, accounts or API keys needed.
+Open http://localhost:8000. No account or API key required. GitHub Actions runs these checks, publishes the app and checks the public page every four hours.
 
-## What is included
-
-A public preset planner using authored asset categories. It does not patch game files or measure FPS.
+The [model](examples/portfolio/model.mjs), [UI](examples/portfolio/app.mjs), [catalogue](examples/portfolio/data/settings.json) and [provenance](PROVENANCE.md) are separate and small enough to inspect directly.
