@@ -1,4 +1,64 @@
-const alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';const checksum=s=>alphabet[[...s].reduce((n,c)=>(n+c.charCodeAt(0))&63,0)];
-export function encode(mode,categories,settings){const preset=settings.presets.find(p=>p.key===mode);if(!preset)throw Error('Unknown preset');const known=new Set(settings.categories.map(c=>c.key));if(categories.some(c=>!known.has(c)))throw Error('Unknown category');const have=new Set(categories),base=new Set(preset.categories),fields=[mode,categories.filter(c=>!base.has(c)).join(','),preset.categories.filter(c=>!have.has(c)).join(',')];while(fields.length>1&&!fields.at(-1))fields.pop();const bytes=new TextEncoder().encode('R'+fields.join('\n')),text=btoa(String.fromCharCode(...bytes)).replaceAll('+','-').replaceAll('/','_').replace(/=+$/,'');return 'STATO1-'+text+checksum(text)}
-export async function decode(code,settings){const match=code.trim().match(/STATO1-([A-Za-z0-9_-]+)/i);if(!match)throw Error('Expected a STATO1 code');const text=match[1].slice(0,-1);if(checksum(text)!==match[1].at(-1))throw Error('Checksum failed');const bytes=Uint8Array.from(atob(text.replaceAll('-','+').replaceAll('_','/')),c=>c.charCodeAt(0));let body;if(bytes[0]===82)body=new TextDecoder().decode(bytes.slice(1));else if(bytes[0]===68)body=await new Response(new Blob([bytes.slice(1)]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();else throw Error('Unknown payload');const f=body.split('\n'),mode=f[0],preset=settings.presets.find(p=>p.key===mode);if(!preset)throw Error('This preset is not in this catalogue');const removed=(f[2]||'').split(','),categories=[...new Set([...preset.categories.filter(c=>!removed.includes(c)),...(f[1]||'').split(',').filter(Boolean)])],known=new Set(settings.categories.map(c=>c.key));if(categories.some(c=>!known.has(c)))throw Error('Code uses categories absent from this version');return{mode,categories,extra:f.slice(3).some(Boolean)}}
-export function compare(base,chosen){return{added:chosen.filter(c=>!base.includes(c)),removed:base.filter(c=>!chosen.includes(c))}}
+const alphabet =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+const checksum = (s) =>
+    alphabet[[...s].reduce((n, c) => (n + c.charCodeAt(0)) & 63, 0)];
+export function encode(mode, categories, settings) {
+    const preset = settings.presets.find((p) => p.key === mode);
+    if (!preset) throw Error("Unknown preset");
+    const known = new Set(settings.categories.map((c) => c.key));
+    if (categories.some((c) => !known.has(c))) throw Error("Unknown category");
+    const have = new Set(categories),
+        base = new Set(preset.categories),
+        fields = [
+            mode,
+            categories.filter((c) => !base.has(c)).join(","),
+            preset.categories.filter((c) => !have.has(c)).join(","),
+        ];
+    while (fields.length > 1 && !fields.at(-1)) fields.pop();
+    const bytes = new TextEncoder().encode("R" + fields.join("\n")),
+        text = btoa(String.fromCharCode(...bytes))
+            .replaceAll("+", "-")
+            .replaceAll("/", "_")
+            .replace(/=+$/, "");
+    return "STATO1-" + text + checksum(text);
+}
+export async function decode(code, settings) {
+    const match = code.trim().match(/STATO1-([A-Za-z0-9_-]+)/i);
+    if (!match) throw Error("Expected a STATO1 code");
+    const text = match[1].slice(0, -1);
+    if (checksum(text) !== match[1].at(-1)) throw Error("Checksum failed");
+    const bytes = Uint8Array.from(
+        atob(text.replaceAll("-", "+").replaceAll("_", "/")),
+        (c) => c.charCodeAt(0),
+    );
+    let body;
+    if (bytes[0] === 82) body = new TextDecoder().decode(bytes.slice(1));
+    else if (bytes[0] === 68)
+        body = await new Response(
+            new Blob([bytes.slice(1)])
+                .stream()
+                .pipeThrough(new DecompressionStream("deflate-raw")),
+        ).text();
+    else throw Error("Unknown payload");
+    const f = body.split("\n"),
+        mode = f[0],
+        preset = settings.presets.find((p) => p.key === mode);
+    if (!preset) throw Error("This preset is not in this catalogue");
+    const removed = (f[2] || "").split(","),
+        categories = [
+            ...new Set([
+                ...preset.categories.filter((c) => !removed.includes(c)),
+                ...(f[1] || "").split(",").filter(Boolean),
+            ]),
+        ],
+        known = new Set(settings.categories.map((c) => c.key));
+    if (categories.some((c) => !known.has(c)))
+        throw Error("Code uses categories absent from this version");
+    return { mode, categories, extra: f.slice(3).some(Boolean) };
+}
+export function compare(base, chosen) {
+    return {
+        added: chosen.filter((c) => !base.includes(c)),
+        removed: base.filter((c) => !chosen.includes(c)),
+    };
+}

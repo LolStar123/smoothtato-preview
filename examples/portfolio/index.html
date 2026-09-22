@@ -1,1 +1,74 @@
-<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>smoothtato / visual configuration</title><link rel="stylesheet" href="style.css"><body><header><a href="https://poetato.app">poetato / smoothtato</a><a href="https://github.com/LolStar123/smoothtato-preview">source code</a></header><main><h1>keep what matters.</h1><p class="intro">Build a visual profile from the application's actual switches. Start with a preset, inspect every change, then export a code the desktop app can read.</p><div class="workspace"><aside><h2>start with a preset</h2><div id="presets"></div><p id="preset-description"></p><div class="meter"><strong id="selected-count">0</strong><span>removal switches enabled</span></div><p class="note">A checked switch removes or changes that feature. Some advanced settings hide characters or combat cues. This planner does not apply changes to your game.</p><button id="export">export app config code</button><button id="restore">restore original</button><details><summary>import a configuration</summary><label>STATO1 code<textarea id="code" rows="4"></textarea></label><button id="import">read the code</button></details><p id="status" role="status"></p></aside><section><div class="search-row"><label>find a switch<input id="search" type="search" placeholder="bloom, particles, audio..."></label><label>show<select id="filter"><option value="all">all switches</option><option value="enabled">enabled only</option><option value="changed">changed from preset</option></select></label></div><p id="differences"></p><div id="categories"></div></section></div><footer id="provenance"></footer></main><script type="module" src="app.mjs"></script></body></html>
+<!doctype html>
+<html lang="en">
+    <meta charset="utf-8" /><meta
+        name="viewport"
+        content="width=device-width,initial-scale=1"
+    /><title>smoothtato / visual configuration</title
+    ><link rel="stylesheet" href="style.css" />
+    <body>
+        <header>
+            <a href="https://poetato.app">poetato / smoothtato</a
+            ><a href="https://github.com/LolStar123/smoothtato-preview"
+                >source code</a
+            >
+        </header>
+        <main>
+            <h1>keep what matters.</h1>
+            <p class="intro">
+                Build a visual profile from the application's actual switches.
+                Start with a preset, inspect every change, then export a code
+                the desktop app can read.
+            </p>
+            <div class="workspace">
+                <aside>
+                    <h2>start with a preset</h2>
+                    <div id="presets"></div>
+                    <p id="preset-description"></p>
+                    <div class="meter">
+                        <strong id="selected-count">0</strong
+                        ><span>removal switches enabled</span>
+                    </div>
+                    <p class="note">
+                        A checked switch removes or changes that feature. Some
+                        advanced settings hide characters or combat cues. This
+                        planner does not apply changes to your game.
+                    </p>
+                    <button id="export">export app config code</button
+                    ><button id="restore">restore original</button>
+                    <details>
+                        <summary>import a configuration</summary>
+                        <label
+                            >STATO1 code<textarea
+                                id="code"
+                                rows="4"
+                            ></textarea></label
+                        ><button id="import">read the code</button>
+                    </details>
+                    <p id="status" role="status"></p>
+                </aside>
+                <section>
+                    <div class="search-row">
+                        <label
+                            >find a switch<input
+                                id="search"
+                                type="search"
+                                placeholder="bloom, particles, audio..." /></label
+                        ><label
+                            >show<select id="filter">
+                                <option value="all">all switches</option>
+                                <option value="enabled">enabled only</option>
+                                <option value="changed">
+                                    changed from preset
+                                </option>
+                            </select></label
+                        >
+                    </div>
+                    <p id="differences"></p>
+                    <div id="categories"></div>
+                </section>
+            </div>
+            <footer id="provenance"></footer>
+        </main>
+        <script type="module" src="app.mjs"></script>
+    </body>
+</html>
