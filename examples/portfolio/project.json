@@ -1,0 +1,11 @@
+{
+  "id": "smoothtato",
+  "repo": "smoothtato-preview",
+  "title": "smoothtato",
+  "caption": "Cuts Path of Exile's visual clutter with presets that keep combat cues readable.",
+  "workflow": "Choose a preset, inspect which effect categories it removes and keep the important encounter cues. Saved configurations make the changes repeatable; restoring Original brings the visuals back.",
+  "benefit": "Fewer particles competing with the thing about to kill you.",
+  "demo": "Compare preset changes and generate a reversible configuration plan.",
+  "source": "Smoothtato.App/ViewModels/MainViewModel.cs preset definitions and Smoother.Core/BundleSmoother.cs categories.",
+  "boundary": "A public preset planner using authored asset categories. It does not patch game files or measure FPS."
+}
