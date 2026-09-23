@@ -40,6 +40,11 @@ try:
         page.screenshot(path=str(ROOT/'examples/portfolio/preview.png'))
         page.set_viewport_size({'width':390,'height':844})
         assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'),'mobile overflow'
+        group=page.locator('#group option').nth(1).inner_text()
+        page.locator('#search').fill('')
+        page.locator('#filter').select_option('all')
+        page.locator('#group').select_option(label=group)
+        assert page.locator('.group-title').count()==1
         assert not errors,errors
         print('PASS: categories, real presets, custom edits, app-code roundtrip, filters and mobile')
         browser.close()

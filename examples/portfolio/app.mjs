@@ -33,7 +33,14 @@ function render() {
             ? `${diff.added.length} extra removals / ${diff.removed.length} preset switches restored`
             : "matches the original preset exactly";
     const groups = new Map();
+    if ($("#group").options.length === 1)
+        $("#group").innerHTML += [
+            ...new Set(settings.categories.map((c) => c.group)),
+        ]
+            .map((g) => `<option>${esc(g)}</option>`)
+            .join("");
     for (const c of settings.categories) {
+        if ($("#group").value && c.group !== $("#group").value) continue;
         if (q && !(c.label + " " + c.blurb).toLowerCase().includes(q)) continue;
         if (filter === "enabled" && !chosen.includes(c.key)) continue;
         if (
@@ -80,6 +87,7 @@ $("#categories").onchange = (e) => {
     render();
 };
 $("#search").oninput = render;
+$("#group").onchange = render;
 $("#filter").onchange = render;
 $("#restore").onclick = () => {
     mode = "normal";
