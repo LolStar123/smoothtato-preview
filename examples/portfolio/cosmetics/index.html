@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+    <meta charset="utf-8" /><meta
+        name="viewport"
+        content="width=device-width,initial-scale=1"
+    /><title>smoothtato / effect wardrobe</title
+    ><link rel="stylesheet" href="style.css" />
+    <body>
+        <header>
+            <a href="https://poetato.app">poetato / smoothtato</a>
+            <nav>
+                <a href="https://github.com/LolStar123/smoothtato-preview"
+                    >code</a
+                ><a
+                    href="https://atul-kanodia-fieldnotes.atulswaggalicious.chatgpt.site"
+                    >atul's projects</a
+                >
+            </nav>
+        </header>
+        <main><nav class="tool-tabs" aria-label="Smoothtato tools"><a href="../">graphics</a><a href="./" aria-current="page">cosmetics</a></nav>
+            <div class="title">
+                <div>
+                    <p class="eyebrow">the actual effect catalogue</p>
+                    <h1>smoothtato / skill effect catalogue</h1>
+                </div>
+                <p id="summary">loading the wardrobe...</p>
+            </div>
+            <p class="journey">
+                Choose a skill, pick an effect, then add it to your loadout.
+                Export the code for the desktop app.
+            </p>
+            <div class="filters">
+                <label
+                    >search<input
+                        id="search"
+                        type="search"
+                        placeholder="celestial, arc, righteous fire..." /></label
+                ><label
+                    >skill<select id="skill">
+                        <option value="">all skills</option>
+                    </select></label
+                ><label
+                    >compatibility evidence<select id="confidence">
+                        <option value="">all entries</option>
+                        <option>HIGH</option>
+                        <option>MEDIUM</option>
+                        <option>LOW</option>
+                    </select></label
+                >
+            </div>
+            <div class="workspace">
+                <section>
+                    <div class="results-head">
+                        <p id="count"></p>
+                        <div>
+                            <button id="prev">previous</button
+                            ><button id="next">next</button>
+                        </div>
+                    </div>
+                    <div id="catalogue"></div>
+                </section>
+                <aside id="effect-desk">
+                    <a class="back-to-catalogue" href="#catalogue"
+                        >back to effects</a
+                    >
+                    <h2 id="effect-title">select an effect</h2>
+                    <div id="preview"></div>
+                    <p id="blurb"></p>
+                    <p id="evidence"></p>
+                    <button id="add">add to the loadout</button>
+                    <h3>your loadout <span id="loadout-count">0</span></h3>
+                    <div id="loadout"></div>
+                    <p id="status" role="status"></p>
+                    <button id="export">export app config code</button>
+                    <details>
+                        <summary>import an existing code</summary>
+                        <label
+                            >paste a STATO1 code<textarea
+                                id="import-code"
+                                rows="4"
+                            ></textarea></label
+                        ><button id="import">load its skill effects</button>
+                    </details>
+                    <details>
+                        <summary>inspect asset mappings</summary>
+                        <pre id="pairs"></pre>
+                    </details>
+                </aside>
+            </div>
+            <footer>
+                This browser plans a skill-effect loadout and exports the app's
+                STATO1 share-code format. It does not patch game files. Mapping
+                confidence comes from the actual app catalogue; it is not a
+                guarantee that an effect works on every game version. Preview
+                artwork belongs to its respective owner.
+            </footer>
+        </main>
+        <script type="module" src="app.mjs"></script>
+    </body>
+</html>

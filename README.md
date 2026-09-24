@@ -1,32 +1,35 @@
 # smoothtato
 
-A Path of Exile visual-settings planner using the desktop app's actual categories and presets.
+One Path of Exile visual tool: remove unwanted graphics and add cosmetic effects through reusable game-file replacement presets.
 
-**[Open the live editor](https://lolstar123.github.io/smoothtato-preview/)** | [poetato.app](https://poetato.app)
+**[graphics editor](https://lolstar123.github.io/smoothtato-preview/)** ? **[cosmetics catalogue](https://lolstar123.github.io/smoothtato-preview/cosmetics/)** ? [desktop app](https://poetato.app)
 
-Choose Performance, League Start, Barebones or Blackout. Change individual switches, compare your changes against the preset, and export a STATO1 code the desktop app can read. Original clears every removal switch. Your choices stay in this browser between visits.
+## Two parts, one tool
 
-![The preset editor](examples/portfolio/preview.png)
+- **Graphics:** 68 actual settings, five presets, searchable switches, and STATO1 import/export.
+- **Cosmetics:** 1,489 skill-effect records, 1,107 preview icons, compatibility checks, saved loadouts and STATO1 import/export.
 
-## What is here
+Use the graphics/cosmetics tabs to switch between the working browser demos. The desktop app applies the file replacements. These browser editors export their respective configuration fields separately; they do not merge unrelated fields from an imported code.
 
-- 68 categories and five presets extracted from the actual engine.
-- Search, grouping and filters for enabled or modified settings.
-- Raw and compressed desktop-code import; preset-relative export with checksum.
-- Disabled controls for source categories marked broken or not implemented.
+![Graphics editor](examples/portfolio/preview.png)
+![Cosmetics catalogue](examples/portfolio/cosmetics/preview.png)
 
-This is a configuration editor. It does not patch game files or claim measured FPS improvements. Some aggressive switches hide characters, effects or sound; read each switch before exporting. Imported skin and other advanced fields are not retained by this visual-settings editor.
+## Code map
 
-## Run and check
+| Part | Source |
+| --- | --- |
+| Graphics editor and codec | [examples/portfolio](examples/portfolio) |
+| Cosmetics catalogue and codec | [examples/portfolio/cosmetics](examples/portfolio/cosmetics) |
+| Data provenance | [PROVENANCE.md](PROVENANCE.md) |
+| Browser checks | [tools](tools) |
+
+## Run
 
 ```sh
 python -m http.server 8000 --directory examples/portfolio
-node --test examples/portfolio/model.test.mjs
-pip install playwright
-python -m playwright install chromium
+node --test examples/portfolio/model.test.mjs examples/portfolio/cosmetics/model.test.mjs
 python tools/browser_audit.py
+python tools/cosmetics_audit.py
 ```
 
-Open http://localhost:8000. No account or API key required. GitHub Actions runs these checks, publishes the app and checks the public page every four hours.
-
-The [model](examples/portfolio/model.mjs), [UI](examples/portfolio/app.mjs), [catalogue](examples/portfolio/data/settings.json) and [provenance](PROVENANCE.md) are separate and small enough to inspect directly.
+No account or API key is needed. Bundled preview artwork retains its original ownership.

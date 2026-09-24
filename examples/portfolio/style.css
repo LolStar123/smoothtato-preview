@@ -246,3 +246,5 @@ footer {
         grid-column: 1/-1;
     }
 }
+
+.tool-tabs{display:flex;gap:12px;margin:0 0 22px}.tool-tabs a{padding:9px 16px;border:1px solid #565b61;text-decoration:none;color:inherit}.tool-tabs [aria-current]{background:#353b40;border-color:#bbc6ba}
