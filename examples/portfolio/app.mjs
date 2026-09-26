@@ -26,12 +26,12 @@ function render() {
                 `<button data-preset="${p.key}" aria-pressed="${mode === p.key}">${esc(p.label)} <small>/ ${p.categories.length}</small></button>`,
         )
         .join("");
-    $("#preset-description").textContent = preset.description;
+    $("#preset-description").textContent = preset.description.split(".")[0] + ".";
     $("#selected-count").textContent = chosen.length;
     $("#differences").textContent =
         diff.added.length || diff.removed.length
-            ? `${diff.added.length} extra removals / ${diff.removed.length} preset switches restored`
-            : "matches the original preset exactly";
+            ? `+${diff.added.length} / −${diff.removed.length} from preset`
+            : "preset unchanged";
     const groups = new Map();
     if ($("#group").options.length === 1)
         $("#group").innerHTML += [
@@ -42,7 +42,7 @@ function render() {
     for (const c of settings.categories) {
         if ($("#group").value && c.group !== $("#group").value) continue;
         if (q && !(c.label + " " + c.blurb).toLowerCase().includes(q)) continue;
-        if (filter === "enabled" && !chosen.includes(c.key)) continue;
+        if (!q && filter === "enabled" && !chosen.includes(c.key)) continue;
         if (
             filter === "changed" &&
             ![...diff.added, ...diff.removed].includes(c.key)
@@ -55,7 +55,7 @@ function render() {
         [...groups]
             .map(
                 ([g, cats]) =>
-                    `<h3 class="group-title">${esc(g)}</h3>${cats.map((c) => `<label class="switch"><input type="checkbox" data-key="${c.key}" ${c.unavailable ? "disabled" : ""} ${chosen.includes(c.key) ? "checked" : ""}><span><strong>${esc(c.label)}</strong><small>${esc(c.blurb)}${c.unavailable ? " / unavailable in the source engine" : ""}</small></span></label>`).join("")}`,
+                    `<h3 class="group-title">${esc(g)}</h3>${cats.map((c) => `<label class="switch"><input type="checkbox" data-key="${c.key}" ${c.unavailable ? "disabled" : ""} ${chosen.includes(c.key) ? "checked" : ""}><span><strong>${esc(c.label)}</strong></span></label>`).join("")}`,
             )
             .join("") || '<p class="note">No switches match these filters.</p>';
     try {
@@ -93,8 +93,7 @@ $("#restore").onclick = () => {
     mode = "normal";
     chosen = [];
     render();
-    $("#status").textContent =
-        "Original profile: no removal switches selected.";
+    $("#status").textContent = "reset.";
 };
 $("#export").onclick = () => {
     const code = encode(mode, chosen, settings),
@@ -104,8 +103,7 @@ $("#export").onclick = () => {
     a.download = "smoothtato-config.txt";
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-    $("#status").textContent =
-        "Exported a STATO1 visual profile. Import the code through the desktop app.";
+    $("#status").textContent = "preset exported.";
 };
 $("#import").onclick = async () => {
     try {
@@ -113,9 +111,7 @@ $("#import").onclick = async () => {
         mode = r.mode;
         chosen = r.categories;
         render();
-        $("#status").textContent = r.extra
-            ? "Visual switches imported. Skin and other configuration fields are not part of this planner."
-            : "Configuration imported.";
+        $("#status").textContent = "preset imported.";
     } catch (e) {
         $("#status").textContent = e.message;
     }
@@ -141,9 +137,7 @@ try {
             chosen = old.chosen;
         }
     } catch {}
-    $("#provenance").textContent =
-        settings.source +
-        ". All 68 engine categories are shown, including advanced categories that may not be exposed in every app release. No performance numbers are invented; no game files are changed here.";
+    $("#provenance").textContent = settings.source;
     render();
 } catch (e) {
     $("#status").textContent = e.message;

@@ -1,76 +1,13 @@
-<!doctype html>
-<html lang="en">
-    <meta charset="utf-8" /><meta
-        name="viewport"
-        content="width=device-width,initial-scale=1"
-    /><title>smoothtato / visual configuration</title
-    ><link rel="stylesheet" href="style.css" />
-    <body>
-        <header>
-            <a href="https://poetato.app">poetato / smoothtato</a
-            ><a href="https://github.com/LolStar123/smoothtato-preview"
-                >source code</a
-            >
-        </header>
-        <main><nav class="tool-tabs" aria-label="Smoothtato tools"><a href="./" aria-current="page">graphics</a><a href="cosmetics/">cosmetics</a></nav>
-            <h1>smoothtato / graphics</h1>
-            <p class="intro">
-                Build a lighter Path of Exile preset, inspect the file changes,
-                then export it to the desktop app.
-            </p>
-            <div class="workspace">
-                <aside>
-                    <h2>preset</h2>
-                    <div id="presets"></div>
-                    <p id="preset-description"></p>
-                    <div class="meter">
-                        <strong id="selected-count">0</strong
-                        ><span>changes enabled</span>
-                    </div>
-                    <p class="note">
-                        Preview only. The desktop app applies the preset.
-                    </p>
-                    <button id="export">export config</button
-                    ><button id="restore">original settings</button>
-                    <details>
-                        <summary>import a configuration</summary>
-                        <label
-                            >STATO1 code<textarea
-                                id="code"
-                                rows="4"
-                            ></textarea></label
-                        ><button id="import">read the code</button>
-                    </details>
-                    <p id="status" role="status"></p>
-                </aside>
-                <section>
-                    <div class="search-row">
-                        <label
-                            >category<select id="group">
-                                <option value="">all categories</option>
-                            </select></label
-                        >
-                        <label
-                            >find a switch<input
-                                id="search"
-                                type="search"
-                                placeholder="bloom, particles, audio..." /></label
-                        ><label
-                            >show<select id="filter">
-                                <option value="all">all switches</option>
-                                <option value="enabled">enabled only</option>
-                                <option value="changed">
-                                    changed from preset
-                                </option>
-                            </select></label
-                        >
-                    </div>
-                    <p id="differences"></p>
-                    <div id="categories"></div>
-                </section>
-            </div>
-            <footer id="provenance"></footer>
-        </main>
-        <script type="module" src="app.mjs"></script>
-    </body>
-</html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>smoothtato / graphics presets</title><link rel="stylesheet" href="style.css"></head><body>
+<header><a href="https://lolstar123.github.io/just-a-little-further/">atul / smoothtato</a><nav><a href="cosmetics/">cosmetics</a><a href="https://github.com/LolStar123/smoothtato-preview">source</a></nav></header>
+<main>
+<section class="hero"><p>path of exile graphics</p><h1>keep the fight.<br><em>lose the clutter.</em></h1></section>
+<section class="presets"><div><span>preset</span><div id="presets"></div></div><div class="meter"><strong id="selected-count">0</strong><span>changes</span></div></section>
+<p id="preset-description"></p>
+<div class="controls"><label>find a switch<input id="search" type="search" placeholder="rain, bloom, particles…"></label><label>show<select id="filter"><option value="enabled">this preset</option><option value="all">all switches</option><option value="changed">my changes</option></select></label><label class="group-control">category<select id="group"><option value="">all</option></select></label></div>
+<p id="differences"></p>
+<section id="categories" aria-label="Graphics switches"></section>
+<div class="actions"><button id="export">export preset</button><button id="restore">reset</button></div>
+<details><summary>import a preset</summary><textarea id="code" rows="3" aria-label="STATO1 code"></textarea><button id="import">import</button></details>
+<p id="status" role="status"></p><footer id="provenance"></footer>
+</main><script type="module" src="app.mjs"></script></body></html>
