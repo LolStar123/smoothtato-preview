@@ -28,6 +28,21 @@ function render() {
         .join("");
     $("#preset-description").textContent = preset.description.split(".")[0] + ".";
     $("#selected-count").textContent = chosen.length;
+    const preview = $("#game-preview"), has = (...keys) => keys.some((key) => chosen.includes(key));
+    preview.classList.toggle("no-rain", has("rain", "particlesonly", "petexcept", "all"));
+    preview.classList.toggle("no-fog", has("fogoff", "noshadow", "smokeblack", "enviro", "all"));
+    preview.classList.toggle("no-bloom", has("bloomkill", "emissiveoff", "killlights", "all"));
+    preview.classList.toggle("no-doodads", has("doodads", "allflat", "terrainmesh", "all"));
+    preview.classList.toggle("no-corpses", has("corpses", "all"));
+    preview.classList.toggle("no-other-player", has("players", "all"));
+    preview.classList.toggle("no-water", has("water", "terrainmesh", "all"));
+    preview.classList.toggle("no-mtx", has("mtx", "all"));
+    preview.classList.toggle("no-particles", has("attackfx", "particlesonly", "petexcept", "all"));
+    preview.classList.toggle("no-aura", has("auras", "all"));
+    preview.classList.toggle("blackout", has("terrainmesh", "fullblackflat"));
+    const remaining = settings.categories.length - chosen.length;
+    $("#preview-state").textContent = `${remaining} visual systems left on`;
+    document.documentElement.style.setProperty("--noise", String(Math.max(.07, remaining / settings.categories.length)));
     $("#differences").textContent =
         diff.added.length || diff.removed.length
             ? `+${diff.added.length} / −${diff.removed.length} from preset`

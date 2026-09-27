@@ -35,7 +35,8 @@ try:
         page.locator('#search').fill('')
         page.locator('#filter').select_option('changed')
         assert page.locator('[data-key]').count()==1
-        page.locator('#filter').select_option('all')
+        page.locator('[data-preset="safe"]').click()
+        page.locator('#filter').select_option('enabled')
         page.evaluate('window.scrollTo(0,0)')
         page.screenshot(path=str(ROOT/'examples/portfolio/preview.png'))
         page.set_viewport_size({'width':390,'height':844})

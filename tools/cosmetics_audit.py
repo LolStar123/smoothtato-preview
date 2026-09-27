@@ -32,7 +32,7 @@ try:
         page.wait_for_function('document.querySelector("#status").textContent.startsWith("Loaded")')
         assert page.locator('#preview img').evaluate('(e)=>e.complete&&e.naturalWidth>0')
         page.evaluate('window.scrollTo(0,0)')
-        page.screenshot(path=str(ROOT/'examples/portfolio/preview.png'))
+        page.screenshot(path=str(ROOT/'examples/portfolio/cosmetics/preview.png'))
         page.set_viewport_size({'width':390,'height':844})
         assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'),'mobile overflow'
         page.locator('#catalogue [data-key]').first.click()

@@ -1,2 +1,10 @@
-/* graphics settings screen: choices first, prose almost absent */
-body{font-family:Tahoma,"Segoe UI",sans-serif}header{height:58px}main{padding:40px 0 48px}.hero{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:20px}.hero p{order:2;margin:0 0 5px}.hero h1{margin:0;font:800 42px/.92 Tahoma,"Segoe UI",sans-serif;letter-spacing:-.05em;text-transform:lowercase}.presets{padding:14px 0}.presets>div>span,.controls label,.group-title{font-family:ui-monospace,Consolas,monospace}.meter strong{font-family:ui-monospace,Consolas,monospace}.controls{margin-bottom:10px}.controls input,.controls select{min-height:40px}.group-title{margin:17px 0 4px}.switch{min-height:39px;padding-inline:8px}.switch:nth-of-type(even){background:#171d17}.actions{margin-top:17px}details{margin-top:16px}summary{padding:13px 0}footer{margin-top:24px;padding-top:13px}@media(max-width:650px){main{padding:32px 0 40px}.hero{display:block}.hero p{margin-bottom:8px}.hero h1{font-size:38px}.presets{align-items:start}.switch{min-height:44px}}
+/* A live game viewport makes every removed effect legible before the switch list begins. */
+.workbench{box-shadow:none}
+.game-preview:before{display:none}
+.ground{border:2px solid #5f6b58;box-shadow:none}
+.crystal{outline:2px solid #e9efae;box-shadow:none}
+.aura,.bloom,.mtx{background:#8ad2c01c;box-shadow:none}
+.bloom{background:#efc58a24}
+.mtx{background:#cf8fcb19}
+.noise-readout i{overflow:hidden}
+.noise-readout b{width:100%;transform:scaleX(var(--noise));transform-origin:left;transition:transform 260ms ease-out}

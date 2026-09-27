@@ -1,0 +1,8 @@
+body,input,select,textarea,button{font-family:Tahoma,"Segoe UI",sans-serif}
+header{font-size:12px}
+.eyebrow{font-size:12px;letter-spacing:.04em}
+label{font-size:12px}
+.results-head,.results-head button,.no-art,.effect small,#loadout button{font-size:12px}
+.effect,#blurb,#evidence,#status,#loadout>div,details,footer{font-size:12px}
+footer{color:#a18f9a}
+@media(max-width:850px){header{font-size:11px}.effect{font-size:12px}}

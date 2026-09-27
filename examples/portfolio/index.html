@@ -1,13 +1,51 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>smoothtato / graphics presets</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="identity.css"></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#11160f">
+    <title>smoothtato / graphics workbench</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="identity.css">
+</head>
+<body>
 <header><a href="https://lolstar123.github.io/just-a-little-further/">atul / smoothtato</a><nav><a href="cosmetics/">cosmetics</a><a href="https://github.com/LolStar123/smoothtato-preview">source</a></nav></header>
 <main>
-<section class="hero"><p>path of exile</p><h1>[ video settings ]</h1></section>
-<section class="presets"><div><span>preset</span><div id="presets"></div></div><div class="meter"><strong id="selected-count">0</strong><span>changes</span></div></section>
-<p id="preset-description"></p>
-<div class="controls"><label>find a switch<input id="search" type="search" placeholder="rain, bloom, particles…"></label><label>show<select id="filter"><option value="enabled">this preset</option><option value="all">all switches</option><option value="changed">my changes</option></select></label><label class="group-control">category<select id="group"><option value="">all</option></select></label></div>
-<p id="differences"></p>
-<section id="categories" aria-label="Graphics switches"></section>
-<div class="actions"><button id="export">export preset</button><button id="restore">reset</button></div>
-<details><summary>import a preset</summary><textarea id="code" rows="3" aria-label="STATO1 code"></textarea><button id="import">import</button></details>
-<p id="status" role="status"></p><footer id="provenance"></footer>
-</main><script type="module" src="app.mjs"></script></body></html>
+    <section class="hero" aria-labelledby="page-title"><h1 id="page-title">smoothtato</h1><p>strip out the expensive stuff. keep the game readable. add the silly cosmetics back in.</p></section>
+
+    <section class="workbench" aria-label="Live graphics preset preview">
+        <div class="preview-panel">
+            <div class="preview-head"><strong>live game view</strong><span id="preview-state">loading switches...</span></div>
+            <div id="game-preview" class="game-preview">
+                <span class="moon"></span><span class="fog fog-a"></span><span class="fog fog-b"></span>
+                <span class="water"></span><span class="ground ground-a"></span><span class="ground ground-b"></span>
+                <span class="doodad tree-a"></span><span class="doodad tree-b"></span><span class="doodad crystal"></span>
+                <span class="corpse corpse-a"></span><span class="corpse corpse-b"></span>
+                <span class="player"><i></i></span><span class="other-player"><i></i></span><span class="monster"></span>
+                <span class="aura"></span><span class="bloom"></span><span class="mtx"></span>
+                <span class="particle p1"></span><span class="particle p2"></span><span class="particle p3"></span><span class="particle p4"></span>
+                <span class="rain r1"></span><span class="rain r2"></span><span class="rain r3"></span><span class="rain r4"></span><span class="rain r5"></span>
+            </div>
+            <div class="noise-readout"><span>visual load</span><i><b id="noise-meter"></b></i><strong id="differences">preset unchanged</strong></div>
+        </div>
+
+        <aside class="preset-panel">
+            <div class="preset-title"><span>preset</span><div class="meter"><strong id="selected-count">0</strong><small>changes</small></div></div>
+            <div id="presets"></div>
+            <p id="preset-description"></p>
+            <div class="actions"><button id="export">export preset</button><button id="restore">reset</button></div>
+        </aside>
+    </section>
+
+    <section class="switchboard" aria-label="Graphics switches">
+        <div class="controls"><label>find a switch<input id="search" type="search" placeholder="rain, bloom, particles..."></label><label>show<select id="filter"><option value="enabled">this preset</option><option value="all">all switches</option><option value="changed">my changes</option></select></label><label class="group-control">category<select id="group"><option value="">all</option></select></label></div>
+        <section id="categories" aria-label="Graphics switches"></section>
+    </section>
+
+    <details><summary>import a preset</summary><textarea id="code" rows="3" aria-label="STATO1 code"></textarea><button id="import">import</button></details>
+    <p id="status" role="status"></p><footer id="provenance"></footer>
+</main>
+<script type="module" src="app.mjs"></script>
+</body>
+</html>

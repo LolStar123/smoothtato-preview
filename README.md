@@ -2,7 +2,7 @@
 
 One Path of Exile visual tool: remove unwanted graphics and add cosmetic effects through reusable game-file replacement presets.
 
-**[graphics editor](https://lolstar123.github.io/smoothtato-preview/)** ? **[cosmetics catalogue](https://lolstar123.github.io/smoothtato-preview/cosmetics/)** ? [desktop app](https://poetato.app)
+**[graphics editor](https://lolstar123.github.io/smoothtato-preview/)** · **[cosmetics catalogue](https://lolstar123.github.io/smoothtato-preview/cosmetics/)** · [desktop app](https://poetato.app)
 
 ## Two parts, one tool
 
