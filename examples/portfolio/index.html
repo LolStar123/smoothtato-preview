@@ -10,9 +10,10 @@
     <link rel="stylesheet" href="identity.css">
 </head>
 <body>
-<header><a href="https://lolstar123.github.io/just-a-little-further/">atul / smoothtato</a><nav><a href="cosmetics/">cosmetics</a><a href="https://github.com/LolStar123/smoothtato-preview">source</a></nav></header>
+<header><a href="https://lolstar123.github.io/just-a-little-further/">atul / smoothtato</a><nav><a href="https://github.com/LolStar123/smoothtato-preview">source</a></nav></header>
 <main>
-    <section class="hero" aria-labelledby="page-title"><h1 id="page-title">smoothtato</h1><p>strip out the expensive stuff. keep the game readable. add the silly cosmetics back in.</p></section>
+    <nav class="tool-tabs" aria-label="Smoothtato tools"><a href="./" aria-current="page">graphics</a><a href="cosmetics/">cosmetics</a></nav>
+    <section class="hero" aria-labelledby="page-title"><h1 id="page-title">smoothtato</h1><p>remove expensive effects. add custom ones.</p></section>
 
     <section class="workbench" aria-label="Live graphics preset preview">
         <div class="preview-panel">
@@ -31,7 +32,7 @@
         </div>
 
         <aside class="preset-panel">
-            <div class="preset-title"><span>preset</span><div class="meter"><strong id="selected-count">0</strong><small>changes</small></div></div>
+            <div class="preset-title"><span>graphics preset</span><div class="meter"><strong id="selected-count">0</strong><small>changes</small></div></div>
             <div id="presets"></div>
             <p id="preset-description"></p>
             <div class="actions"><button id="export">export preset</button><button id="restore">reset</button></div>

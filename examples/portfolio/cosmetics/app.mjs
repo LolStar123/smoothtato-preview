@@ -38,7 +38,7 @@ function render() {
         pages = Math.max(1, Math.ceil(filtered.length / size));
     page = Math.min(page, pages - 1);
     $("#count").textContent =
-        `${filtered.length} effects / page ${page + 1} of ${pages}`;
+        `${filtered.length} effects · page ${page + 1} / ${pages}`;
     $("#prev").disabled = page === 0;
     $("#next").disabled = page === pages - 1;
     $("#catalogue").innerHTML =
