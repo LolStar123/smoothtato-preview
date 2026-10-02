@@ -31,7 +31,7 @@ try:
         assert code.startswith('STATO1-')
         page.locator('#restore').click()
         assert page.evaluate('__smooth.chosen.length')==0
-        if not page.locator('#code').is_visible():page.locator('summary').first.click()
+        if not page.locator('#code').is_visible():page.locator('details').filter(has=page.locator('#code')).locator('summary').click()
         page.locator('#code').fill(code);page.locator('#import').click()
         page.wait_for_function('__smooth.chosen.length===38')
         page.locator('#search').fill('')
@@ -68,7 +68,7 @@ try:
         assert page.locator('.bloom').evaluate('(el)=>getComputedStyle(el).animationName')=='none'
         page.emulate_media(reduced_motion='reduce')
         assert page.locator('.particle').first.evaluate('(el)=>getComputedStyle(el).animationName')=='none'
-        if not page.locator('#code').is_visible():page.locator('summary').first.click()
+        if not page.locator('#code').is_visible():page.locator('details').filter(has=page.locator('#code')).locator('summary').click()
         page.locator('#code').fill('broken-code');page.locator('#import').click()
         assert 'STATO1' in page.locator('#status').inner_text()
         assert page.evaluate('__smooth.chosen.length')==37

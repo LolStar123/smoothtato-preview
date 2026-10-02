@@ -59,7 +59,7 @@ function render() {
             .join("") ||
         "<p>No effects match. Clear the search or choose all skills.</p>";
     const graphics = graphicsProfile(settings);
-    $("#profile-summary").textContent = `${graphics.chosen.length} graphics changes / ${chosen.length} cosmetic effects in this profile`;
+    $("#profile-summary").textContent = `${graphics.chosen.length} graphics / ${chosen.length} cosmetics`;
     if (focused) $(`[data-key="${CSS.escape(focused)}"]`)?.focus({ preventScroll: true });
     window.__mtx = {
         ready: true,
@@ -75,7 +75,7 @@ function inspect(r) {
     $("#blurb").textContent = r.Blurb || r.SkillDisplay || r.Skill;
     $("#evidence").textContent =
         (r.Pairs?.length || 0) +
-        " asset mappings / " +
+        " mappings / " +
         r.Confidence.toLowerCase() +
         " confidence";
     $("#pairs").textContent = (r.Pairs || [])
@@ -96,9 +96,7 @@ function basket() {
     $("#export").disabled = !chosen.length || !!clashes.length;
     $("#status").textContent = clashes.length
         ? "Two selections target the same base asset. Remove a conflicting effect before exporting."
-        : chosen.length
-          ? "One effect per skill. Export includes your graphics changes and these effects."
-          : "Pick an effect to start a loadout.";
+        : "";
     saveEffects(chosen);
     render();
 }
@@ -151,7 +149,7 @@ $("#export").onclick = () => {
         a.click();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
         $("#status").textContent =
-            "Exported one STATO1 code with your graphics changes and cosmetic effects.";
+            "Profile exported";
     } catch (e) {
         $("#status").textContent = e.message;
     }
@@ -165,10 +163,7 @@ $("#import").onclick = async () => {
         chosen = known;
         saveGraphics(decoded.mode, decoded.categories);
         basket();
-        $("#status").textContent =
-            "Loaded " +
-            chosen.length +
-            ` skill effects and ${decoded.categories.length} graphics changes.`;
+        $("#status").textContent = "Profile imported";
     } catch (e) {
         $("#status").textContent = e.message;
     }
@@ -188,13 +183,10 @@ try {
         skills
             .map(([k, v]) => `<option value="${esc(k)}">${esc(v)}</option>`)
             .join("");
-    $("#summary").textContent =
-        `${data.length.toLocaleString()} effects / ${skills.length} skills / real app mappings`;
     chosen = effectProfile(data);
     document.querySelectorAll("button, input, select, textarea").forEach((el) => el.disabled = false);
     inspect(data.find((r) => r.Key === "celestial_aura_effect") || data[0]);
     basket();
 } catch (e) {
-    $("#summary").textContent = "The effects or settings catalogue could not load. Reload to retry.";
-    $("#status").textContent = $("#summary").textContent;
+    $("#status").textContent = "The effects or settings catalogue could not load. Reload to retry.";
 }

@@ -14,6 +14,84 @@ const $ = (s) => document.querySelector(s),
                     "'": "&#39;",
                 })[c],
         );
+// Short UI labels; canonical source labels remain in settings.json and tooltips.
+const switchLabels = {
+    "all": "Remove all particles",
+    "playerblack": "Hide player and gear",
+    "monsterblack": "Hide monsters and attack animations",
+    "hideoutmesh": "Hide hideout decorations",
+    "cassiablack": "Hide Cassia and Blight glint",
+    "npcblack": "Hide NPCs and glows",
+    "volatiledeadblack": "Hide Volatile Dead orbs",
+    "lioneyebannerblack": "Remove Lioneye flag and cloth",
+    "strictpropsblack": "Hide quest banners and back attachments",
+    "attackcontrollerblack": "Remove remaining combat effects",
+    "effectsexcept": "Remove effects except encounter cues",
+    "chareffects": "Remove character glows and charges",
+    "terraincontrollerblack": "Remove remaining terrain effects",
+    "terrainmesh": "Remove all terrain",
+    "charselectmesh": "Hide character-select scene",
+    "water": "Remove water",
+    "auras": "Remove aura and skill-effect packs",
+    "floorflat": "Blacken ground textures",
+    "hideoutflat": "Blacken hideout decoration thumbnails",
+    "blackflag": "Remove Lioneye quest flag",
+    "doodads": "Remove decorative props",
+    "noshadow": "Disable shadows, reflections and fog",
+    "allflat": "Blacken world textures",
+    "effectflat": "Remove smoke and effect textures",
+    "envcubeblack": "Blacken environment reflections",
+    "clothblack": "Remove cloth, banners and capes",
+    "smokeblack": "Remove smoke and mist meshes",
+    "killlights": "Remove object lights",
+    "killlightprofiles": "Disable profiled lights",
+    "moodygrade": "Darken colour grade",
+    "mapreveal": "Reveal minimap",
+    "relight": "Darken unlit glow surfaces",
+    "lightdim": "Dim local lights to 50%",
+    "lightshaderkill": "Disable local light rendering",
+    "flaskicons": "Blacken flask icons",
+    "gemicons": "Blacken gem icons",
+    "currencyicons": "Blacken currency icons",
+    "mapicons": "Blacken map icons",
+    "itemicons": "Blacken other item icons",
+    "fullblackflat": "Blacken non-UI textures",
+    "itemfxblack": "Blacken item influence glows",
+    "inventorycubemapsblack": "Blacken inventory reflections",
+    "itemlookupsblack": "Blacken item lookup textures",
+    "synthitemfxblack": "Blacken synthesis effects",
+    "audiostripblack": "Mute sound",
+    "emissiveoff": "Disable shader glow",
+    "bloomkill": "Remove bloom",
+    "enemyhealthblack": "Blacken enemy health bars",
+    "bootlogosblack": "Blacken startup logos",
+    "loadingblack": "Blacken loading artwork",
+    "loginblack": "Blacken login artwork",
+    "charselectflat": "Blacken character-select textures",
+    "particlesonly": "Remove blood, rain and impact particles",
+    "petexcept": "Remove particles except encounter cues",
+    "epkexcept": "Remove effect packs except encounter cues",
+    "emitter1": "Single lightning emitter (no-op)",
+    "attackfx": "Remove attack and spell particles",
+    "mtx": "Remove cosmetic particles",
+    "ground": "Remove ground-effect particles",
+    "floor": "Remove ambient floor particles",
+    "enviro": "Remove mist and dust particles",
+    "fogoff": "Disable distance and volumetric fog",
+    "rain": "Remove rain",
+    "blood": "Remove blood and gore particles",
+    "corpses": "Remove corpses",
+    "npcs": "Hide NPC models",
+    "crafting": "Hide crafting tables",
+    "players": "Hide other players"
+};
+const presetDescriptions = {
+    normal: "Restore original graphics.",
+    safe: "Remove ambient and cosmetic particles, blood, rain, bloom, corpses and sound; dim local lights to 50%.",
+    aggressive: "Performance plus skill particles with encounter-cue exceptions, decorative props, smoke and water.",
+    heavy: "League Start plus additional effect removal, with encounter-cue exceptions; disable shadows, reflections and fog.",
+    blackout: "Remove terrain, characters, effects, lighting and sound; blacken menu artwork. Item icons remain."
+};
 let settings, catalogue,
     mode = "safe",
     chosen = [],
@@ -29,10 +107,10 @@ function render() {
     $("#presets").innerHTML = settings.presets
         .map(
             (p) =>
-                `<button data-preset="${p.key}" aria-pressed="${mode === p.key}">${esc(p.label)} <small>/ ${p.categories.length}</small></button>`,
+                `<button data-preset="${p.key}" aria-pressed="${mode === p.key}">${esc(p.label)}</button>`,
         )
         .join("");
-    $("#preset-description").textContent = preset.description.split(".")[0] + ".";
+    $("#preset-description").textContent = presetDescriptions[mode];
     const preview = $("#game-preview"), has = (...keys) => !comparing && keys.some((key) => chosen.includes(key));
     preview.classList.toggle("no-rain", has("rain", "particlesonly", "petexcept", "all"));
     preview.classList.toggle("no-fog", has("fogoff", "noshadow", "smokeblack", "enviro", "all"));
@@ -47,16 +125,9 @@ function render() {
     preview.classList.toggle("blackout", has("terrainmesh", "fullblackflat"));
     preview.classList.toggle("no-player", has("playerblack"));
     preview.classList.toggle("no-monster", has("monsterblack"));
-    const layers = ["rain", "fog", "bloom", "doodads", "corpses", "other-player", "water", "mtx", "particles", "aura", "player", "monster"];
-    const visible = layers.filter((layer) => !preview.classList.contains("no-" + layer)).length;
     $("#preview-state").textContent = comparing ? "Original comparison" : preset.label + (diff.added.length || diff.removed.length ? " / custom" : "");
-    $("#scene-layers").textContent = `${visible} of ${layers.length} illustrated groups visible`;
     $("#compare").setAttribute("aria-pressed", comparing);
     $("#compare").textContent = comparing ? "Show my graphics" : "Compare Original";
-    $("#differences").textContent =
-        diff.added.length || diff.removed.length
-            ? `+${diff.added.length} / −${diff.removed.length} from preset`
-            : "preset unchanged";
     const groups = new Map();
     if ($("#group").options.length === 1)
         $("#group").innerHTML += [
@@ -66,7 +137,7 @@ function render() {
             .join("");
     for (const c of settings.categories) {
         if ($("#group").value && c.group !== $("#group").value) continue;
-        if (q && !(c.label + " " + c.blurb).toLowerCase().includes(q)) continue;
+        if (q && !(switchLabels[c.key] + " " + c.label + " " + c.blurb).toLowerCase().includes(q)) continue;
         if (!q && filter === "enabled" && !chosen.includes(c.key)) continue;
         if (
             filter === "changed" &&
@@ -80,14 +151,12 @@ function render() {
         [...groups]
             .map(
                 ([g, cats]) =>
-                    `<h3 class="group-title">${esc(g)}</h3>${cats.map((c) => `<label class="switch"><input type="checkbox" data-key="${c.key}" ${c.unavailable ? "disabled" : ""} ${chosen.includes(c.key) ? "checked" : ""}><span><strong>${esc(c.label)}</strong>${c.unavailable ? '<small>Unavailable in the source version</small>' : ''}</span></label>`).join("")}`,
+                    `<h3 class="group-title">${esc(g)}</h3>${cats.map((c) => `<label class="switch"><input type="checkbox" data-key="${c.key}" ${c.unavailable ? "disabled" : ""} ${chosen.includes(c.key) ? "checked" : ""}><span><strong title="${esc(c.label)}">${esc(switchLabels[c.key] || c.label)}</strong>${c.unavailable ? '<small>Unavailable</small>' : ''}</span></label>`).join("")}`,
             )
             .join("") || '<p class="note">No switches match these filters.</p>';
-    const shown = [...groups.values()].reduce((n, cats) => n + cats.length, 0);
-    $("#switch-count").textContent = `${shown} of ${settings.categories.length} settings shown. Checked switches apply the named change.`;
     saveGraphics(mode, chosen);
     const effects = effectProfile(catalogue);
-    $("#profile-summary").textContent = `${chosen.length} graphics changes / ${effects.length} cosmetic effects in this profile`;
+    $("#profile-summary").textContent = `${chosen.length} graphics / ${effects.length} cosmetics`;
     $("#export").disabled = !!conflicts(effects).length;
     if (focusKey) $(`[data-key="${CSS.escape(focusKey)}"]`)?.focus({ preventScroll: true });
     else if (focusPreset) $(`[data-preset="${CSS.escape(focusPreset)}"]`)?.focus({ preventScroll: true });
@@ -105,7 +174,7 @@ $("#presets").onclick = (e) => {
     chosen = [...settings.presets.find((p) => p.key === mode).categories];
     comparing = false;
     render();
-    $("#status").textContent = settings.presets.find((p) => p.key === mode).label + " graphics selected. Cosmetic effects are kept.";
+    $("#status").textContent = "";
 };
 $("#categories").onchange = (e) => {
     const key = e.target.dataset.key;
@@ -124,7 +193,7 @@ $("#restore").onclick = () => {
     chosen = [];
     comparing = false;
     render();
-    $("#status").textContent = "Restored Original graphics. Cosmetic effects are kept.";
+    $("#status").textContent = "Original restored";
 };
 $("#export").onclick = () => {
     const effects = effectProfile(catalogue);
@@ -139,7 +208,7 @@ $("#export").onclick = () => {
     a.download = "smoothtato-config.txt";
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-    $("#status").textContent = `Exported ${chosen.length} graphics changes and ${effects.length} cosmetic effects.`;
+    $("#status").textContent = "Profile exported";
 };
 $("#import").onclick = async () => {
     try {
@@ -151,7 +220,7 @@ $("#import").onclick = async () => {
         chosen = r.categories;
         saveEffects(effects);
         render();
-        $("#status").textContent = `Imported ${chosen.length} graphics changes and ${effects.length} cosmetic effects.`;
+        $("#status").textContent = "Profile imported";
     } catch (e) {
         $("#status").textContent = e.message;
     }
@@ -162,7 +231,6 @@ try {
     settings = await r.json();
     catalogue = await c.json();
     ({ mode, chosen } = graphicsProfile(settings));
-    $("#provenance").textContent = "68 source settings and five presets. Browser exports do not write game files.";
     document.querySelectorAll("button, input, select, textarea").forEach((el) => el.disabled = false);
     render();
 } catch (e) {

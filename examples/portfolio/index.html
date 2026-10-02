@@ -13,12 +13,12 @@
 <header><a href="https://lolstar123.github.io/just-a-little-further/">atul / smoothtato</a><nav><a href="https://github.com/LolStar123/smoothtato-preview">source</a></nav></header>
 <main>
     <nav class="tool-tabs" aria-label="Smoothtato tools"><a href="./" aria-current="page">graphics</a><a href="cosmetics/">cosmetics</a></nav>
-    <section class="hero" aria-labelledby="page-title"><h1 id="page-title">smoothtato</h1><p>Path of Exile graphics and cosmetics.<br>One profile for both.</p></section>
-    <p id="profile-summary" class="profile-summary">Loading your graphics and cosmetics profile...</p>
+    <section class="hero" aria-labelledby="page-title"><h1 id="page-title">Path of Exile</h1></section>
+    <p id="profile-summary" class="profile-summary">Loading profile...</p>
 
     <section class="workbench" aria-label="Live graphics preset preview">
         <div class="preview-panel">
-            <div class="preview-head"><strong>effect sketch</strong><span id="preview-state">loading switches...</span></div>
+            <div class="preview-head"><strong>Illustration</strong><span id="preview-state">loading switches...</span></div>
             <div id="game-preview" class="game-preview" role="img" aria-label="Illustrated encounter showing the effect groups retained by your graphics selections">
                 <span class="moon"></span><span class="fog fog-a"></span><span class="fog fog-b"></span>
                 <span class="water"></span><span class="ground ground-a"></span><span class="ground ground-b"></span>
@@ -29,26 +29,24 @@
                 <span class="particle p1"></span><span class="particle p2"></span><span class="particle p3"></span><span class="particle p4"></span>
                 <span class="rain r1"></span><span class="rain r2"></span><span class="rain r3"></span><span class="rain r4"></span><span class="rain r5"></span>
             </div>
-            <div class="noise-readout"><span id="scene-layers">Illustrated effect groups</span><strong id="differences">preset unchanged</strong></div>
-            <div class="comparison"><span>Illustration, not game footage or an FPS estimate.</span><button id="compare" aria-pressed="false">Compare Original</button></div>
+            <div class="comparison"><button id="compare" aria-pressed="false">Compare Original</button></div>
         </div>
 
         <aside class="preset-panel">
             <div class="preset-title"><span>graphics preset</span></div>
             <div id="presets"></div>
-            <p id="preset-description"></p>
+            <details><summary>preset details</summary><p id="preset-description"></p></details>
             <div class="actions"><button id="export">export profile</button><button id="restore">restore Original</button></div>
         </aside>
     </section>
 
     <section class="switchboard" aria-label="Graphics switches">
-        <div class="controls"><label>find a switch<input id="search" type="search" placeholder="rain, bloom, particles..."></label><label>show<select id="filter"><option value="enabled">this preset</option><option value="all">all switches</option><option value="changed">my changes</option></select></label><label class="group-control">category<select id="group"><option value="">all</option></select></label></div>
-        <p id="switch-count" class="switch-count" aria-live="polite"></p>
+        <div class="controls"><label>search<input id="search" type="search" placeholder="rain, bloom, particles..."></label><label>show<select id="filter"><option value="enabled">this preset</option><option value="all">all switches</option><option value="changed">my changes</option></select></label><label class="group-control">category<select id="group"><option value="">all</option></select></label></div>
         <section id="categories" aria-label="Graphics switches"></section>
     </section>
 
-    <details><summary>import a graphics and cosmetics profile</summary><textarea id="code" rows="3" aria-label="STATO1 code"></textarea><button id="import">import profile</button></details>
-    <p id="status" role="status"></p><footer id="provenance"></footer>
+    <details><summary>import profile</summary><textarea id="code" rows="3" aria-label="STATO1 code"></textarea><button id="import">import profile</button></details>
+    <p id="status" role="status"></p><footer><a href="https://github.com/LolStar123/smoothtato-preview#readme">README</a></footer>
 </main>
 <script type="module" src="app.mjs"></script>
 </body>

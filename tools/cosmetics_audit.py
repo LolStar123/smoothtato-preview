@@ -31,7 +31,7 @@ try:
         assert code.startswith('STATO1-')
         page.locator('#import-code').fill(code) if page.locator('#import-code').is_visible() else page.locator('summary').first.click()
         page.locator('#import-code').fill(code);page.locator('#import').click()
-        page.wait_for_function('document.querySelector("#status").textContent.startsWith("Loaded")')
+        page.wait_for_function('document.querySelector("#status").textContent === "Profile imported"')
         assert page.locator('#preview img').evaluate('(e)=>e.complete&&e.naturalWidth>0')
         page.evaluate('window.scrollTo(0,0)')
         page.screenshot(path=str(ROOT/'examples/portfolio/cosmetics/preview.png'))
@@ -68,15 +68,15 @@ try:
         page.goto(page.url.split('/cosmetics/')[0]+'/',wait_until='networkidle')
         page.wait_for_function('window.__smooth?.ready')
         assert page.evaluate('__smooth.chosen.length')==11
-        assert '1 cosmetic effects' in page.locator('#profile-summary').inner_text()
+        assert '1 cosmetics' in page.locator('#profile-summary').inner_text()
         with page.expect_download() as dl:page.locator('#export').click()
         assert Path(dl.value.path()).read_text()==code
         page.locator('#restore').click()
-        assert '1 cosmetic effects' in page.locator('#profile-summary').inner_text()
+        assert '1 cosmetics' in page.locator('#profile-summary').inner_text()
         page.locator('a[href="cosmetics/"]').click()
         page.wait_for_function('window.__mtx?.ready')
         assert page.evaluate('__mtx.chosen')==before
-        assert '0 graphics changes' in page.locator('#profile-summary').inner_text()
+        assert '0 graphics' in page.locator('#profile-summary').inner_text()
         page.locator('#catalogue .effect').first.focus();page.keyboard.press('Enter')
         assert page.locator('#effect-title').evaluate('(el)=>el===document.activeElement')
         assert page.locator('#effect-title').evaluate('(el)=>getComputedStyle(el).outlineWidth')=='2px'
