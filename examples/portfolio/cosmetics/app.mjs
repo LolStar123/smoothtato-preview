@@ -1,4 +1,6 @@
-import { encode, decode, conflicts, select } from "./model.mjs";
+import { encode, conflicts, select } from "./model.mjs";
+import { decode as decodeGraphics } from "../model.mjs";
+import { graphicsProfile, effectProfile, saveGraphics, saveEffects, importedEffects } from "../profile.mjs";
 const $ = (s) => document.querySelector(s),
     esc = (s) =>
         String(s ?? "").replace(
@@ -12,18 +14,21 @@ const $ = (s) => document.querySelector(s),
                     "'": "&#39;",
                 })[c],
         );
-let data,
+let data, settings,
     selected,
     chosen = [],
     page = 0;
-const size = 36;
+const compact = matchMedia("(max-width: 850px)");
+const pageSize = () => compact.matches ? 8 : 24;
+document.querySelectorAll("button, input, select, textarea").forEach((el) => el.disabled = true);
 function image(r) {
     return r.icon
         ? `<img src="${esc(r.icon)}" alt="${esc(r.FullName)}" loading="lazy">`
         : '<span class="no-art">no preview in catalogue</span>';
 }
 function render() {
-    const q = $("#search").value.toLowerCase(),
+    const focused = document.activeElement?.dataset?.key;
+    const size = pageSize(), q = $("#search").value.toLowerCase(),
         skill = $("#skill").value,
         confidence = $("#confidence").value,
         filtered = data.filter(
@@ -41,6 +46,9 @@ function render() {
         `${filtered.length} effects · page ${page + 1} / ${pages}`;
     $("#prev").disabled = page === 0;
     $("#next").disabled = page === pages - 1;
+    $("#prev-bottom").disabled = page === 0;
+    $("#next-bottom").disabled = page === pages - 1;
+    $("#page-note").textContent = `Page ${page + 1} of ${pages}`;
     $("#catalogue").innerHTML =
         filtered
             .slice(page * size, (page + 1) * size)
@@ -50,6 +58,9 @@ function render() {
             )
             .join("") ||
         "<p>No effects match. Clear the search or choose all skills.</p>";
+    const graphics = graphicsProfile(settings);
+    $("#profile-summary").textContent = `${graphics.chosen.length} graphics changes / ${chosen.length} cosmetic effects in this profile`;
+    if (focused) $(`[data-key="${CSS.escape(focused)}"]`)?.focus({ preventScroll: true });
     window.__mtx = {
         ready: true,
         total: data.length,
@@ -86,22 +97,19 @@ function basket() {
     $("#status").textContent = clashes.length
         ? "Two selections target the same base asset. Remove a conflicting effect before exporting."
         : chosen.length
-          ? "One effect per skill. The exported code contains only this skill-effect loadout."
+          ? "One effect per skill. Export includes your graphics changes and these effects."
           : "Pick an effect to start a loadout.";
-    try {
-        localStorage.setItem(
-            "mtxtato-loadout",
-            JSON.stringify(chosen.map((r) => r.Key)),
-        );
-    } catch {}
+    saveEffects(chosen);
     render();
 }
 $("#catalogue").onclick = (e) => {
     const b = e.target.closest("[data-key]");
     if (b) {
         inspect(data.find((r) => r.Key === b.dataset.key));
-        if (matchMedia("(max-width: 850px)").matches)
+        if (compact.matches) {
             $("#effect-desk").scrollIntoView({ block: "start" });
+            $("#effect-title").focus({ preventScroll: true });
+        }
     }
 };
 $("#add").onclick = () => {
@@ -120,17 +128,22 @@ for (const id of ["search", "skill", "confidence"])
         page = 0;
         render();
     };
-$("#prev").onclick = () => {
-    page--;
-    render();
-};
-$("#next").onclick = () => {
-    page++;
-    render();
+function turnPage(delta) {
+    page += delta; render();
+    $("#count").scrollIntoView({ block: "start" });
+    $("#count").focus({ preventScroll: true });
+}
+for (const id of ["prev", "prev-bottom"]) $("#" + id).onclick = () => turnPage(-1);
+for (const id of ["next", "next-bottom"]) $("#" + id).onclick = () => turnPage(1);
+compact.addEventListener("change", () => { if (data) { page = 0; render(); } });
+$(".back-to-catalogue").onclick = (e) => {
+    e.preventDefault();
+    $("#catalogue").scrollIntoView({ block: "start" });
+    $(`[data-key="${CSS.escape(selected.Key)}"]`)?.focus({ preventScroll: true });
 };
 $("#export").onclick = () => {
     try {
-        const code = encode(chosen),
+        const code = encode(chosen, graphicsProfile(settings), settings),
             url = URL.createObjectURL(new Blob([code], { type: "text/plain" })),
             a = document.createElement("a");
         a.href = url;
@@ -138,33 +151,33 @@ $("#export").onclick = () => {
         a.click();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
         $("#status").textContent =
-            "Exported a STATO1 code. Import it through the application config-code field.";
+            "Exported one STATO1 code with your graphics changes and cosmetic effects.";
     } catch (e) {
         $("#status").textContent = e.message;
     }
 };
 $("#import").onclick = async () => {
     try {
-        const decoded = await decode($("#import-code").value),
-            known = decoded.skins.map((key) => data.find((r) => r.Key === key));
-        if (known.some((r) => !r))
-            throw Error(
-                "This code contains effects outside this skill catalogue; it has not been imported.",
-            );
+        const decoded = await decodeGraphics($("#import-code").value, settings);
+        if (decoded.extra) throw Error("This code includes settings this browser cannot edit. The current profile has been kept.");
+        const known = importedEffects(decoded.skins, data);
+        if (conflicts(known).length) throw Error("This code contains conflicting effects. The current profile has been kept.");
         chosen = known;
+        saveGraphics(decoded.mode, decoded.categories);
         basket();
         $("#status").textContent =
             "Loaded " +
             chosen.length +
-            " skill effects. Other settings from the source code are not imported here.";
+            ` skill effects and ${decoded.categories.length} graphics changes.`;
     } catch (e) {
         $("#status").textContent = e.message;
     }
 };
 try {
-    const response = await fetch("data/catalogue.json");
-    if (!response.ok) throw Error("Catalogue could not load");
+    const [response, graphics] = await Promise.all([fetch("data/catalogue.json"), fetch("../data/settings.json")]);
+    if (!response.ok || !graphics.ok) throw Error("The effects or settings catalogue could not load. Reload to retry.");
     data = await response.json();
+    settings = await graphics.json();
     const skills = [
         ...new Map(
             data.map((r) => [r.Skill, r.SkillDisplay || r.Skill]),
@@ -177,14 +190,11 @@ try {
             .join("");
     $("#summary").textContent =
         `${data.length.toLocaleString()} effects / ${skills.length} skills / real app mappings`;
-    try {
-        chosen = JSON.parse(localStorage.getItem("mtxtato-loadout") || "[]")
-            .map((key) => data.find((r) => r.Key === key))
-            .filter(Boolean);
-    } catch {}
+    chosen = effectProfile(data);
+    document.querySelectorAll("button, input, select, textarea").forEach((el) => el.disabled = false);
     inspect(data.find((r) => r.Key === "celestial_aura_effect") || data[0]);
     basket();
 } catch (e) {
-    $("#summary").textContent = e.message;
-    throw e;
+    $("#summary").textContent = "The effects or settings catalogue could not load. Reload to retry.";
+    $("#status").textContent = $("#summary").textContent;
 }

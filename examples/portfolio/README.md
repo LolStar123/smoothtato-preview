@@ -1,1 +1,3 @@
-See the [repository guide](../../README.md) for the runnable editor, tests and scope. Data is bundled; no API key is required.
+[Open the demo](https://lolstar123.github.io/smoothtato-preview/).
+
+See the [repository guide](../../README.md) for setup, interaction, source data and checks.

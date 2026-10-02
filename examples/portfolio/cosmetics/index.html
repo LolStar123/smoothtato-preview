@@ -3,8 +3,8 @@
     <meta charset="utf-8" /><meta
         name="viewport"
         content="width=device-width,initial-scale=1"
-    /><title>smoothtato / effect wardrobe</title
-    ><link rel="stylesheet" href="style.css" /><link rel="stylesheet" href="identity.css" />
+    /><title>smoothtato / cosmetics</title
+    ><link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" /><link rel="stylesheet" href="style.css" /><link rel="stylesheet" href="identity.css" />
     <body>
         <header>
             <a href="https://poetato.app">poetato / smoothtato</a>
@@ -20,12 +20,13 @@
         <main><nav class="tool-tabs" aria-label="Smoothtato tools"><a href="../">graphics</a><a href="./" aria-current="page">cosmetics</a></nav>
             <div class="title">
                 <div>
-                    <p class="eyebrow">the actual effect catalogue</p>
-                    <h1>smoothtato / skill effect catalogue</h1>
+                    <p class="eyebrow">smoothtato / cosmetics</p>
+                    <h1>Make the effect yours.</h1>
                 </div>
                 <p id="summary">loading the wardrobe...</p>
             </div>
             <p class="journey">pick an effect. add it to your loadout.</p>
+            <p id="profile-summary" class="profile-summary">Loading your graphics and cosmetics profile...</p>
             <div class="filters">
                 <label
                     >search<input
@@ -48,19 +49,20 @@
             <div class="workspace">
                 <section>
                     <div class="results-head">
-                        <p id="count"></p>
+                        <p id="count" tabindex="-1" aria-live="polite"></p>
                         <div>
                             <button id="prev">previous</button
                             ><button id="next">next</button>
                         </div>
                     </div>
                     <div id="catalogue"></div>
+                    <div class="pagination-bottom"><button id="prev-bottom">previous</button><span id="page-note"></span><button id="next-bottom">next</button></div>
                 </section>
                 <aside id="effect-desk">
                     <a class="back-to-catalogue" href="#catalogue"
                         >back to effects</a
                     >
-                    <h2 id="effect-title">select an effect</h2>
+                    <h2 id="effect-title" tabindex="-1">select an effect</h2>
                     <div id="preview"></div>
                     <p id="blurb"></p>
                     <p id="evidence"></p>
@@ -68,7 +70,7 @@
                     <h3>your loadout <span id="loadout-count">0</span></h3>
                     <div id="loadout"></div>
                     <p id="status" role="status"></p>
-                    <button id="export">export app config code</button>
+                    <button id="export">export profile</button>
                     <details>
                         <summary>import an existing code</summary>
                         <label
@@ -76,7 +78,7 @@
                                 id="import-code"
                                 rows="4"
                             ></textarea></label
-                        ><button id="import">load its skill effects</button>
+                        ><button id="import">import profile</button>
                     </details>
                     <details>
                         <summary>inspect asset mappings</summary>
@@ -85,8 +87,8 @@
                 </aside>
             </div>
             <footer>
-                This browser plans a skill-effect loadout and exports the app's
-                STATO1 share-code format. It does not patch game files. Mapping
+                Export saves your graphics changes and skill-effect loadout in one
+                STATO1 share code. The browser does not patch game files. Mapping
                 confidence comes from the actual app catalogue; it is not a
                 guarantee that an effect works on every game version. Preview
                 artwork belongs to its respective owner.

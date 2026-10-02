@@ -1,10 +1,14 @@
-/* A live game viewport makes every removed effect legible before the switch list begins. */
-.workbench{box-shadow:none}
-.game-preview:before{display:none}
-.ground{border:2px solid #5f6b58;box-shadow:none}
-.crystal{outline:2px solid #e9efae;box-shadow:none}
-.aura,.bloom,.mtx{background:#8ad2c01c;box-shadow:none}
-.bloom{background:#efc58a24}
-.mtx{background:#cf8fcb19}
-.noise-readout i{overflow:hidden}
-.noise-readout b{width:100%;transform:scaleX(var(--noise));transform-origin:left;transition:transform 260ms ease-out}
+/* The encounter sketch is illustrative; category counts are configuration data. */
+.workbench{box-shadow:none}.game-preview:before{display:none}.ground{box-shadow:none}.crystal{box-shadow:none}.aura,.bloom,.mtx{box-shadow:none}
+.tool-tabs a{min-height:44px;display:flex;align-items:center;padding:10px 15px;font:12px/1.2 Tahoma,"Segoe UI",sans-serif;text-transform:none;letter-spacing:0}
+main{padding-top:34px}.tool-tabs{margin-bottom:30px}.hero{margin-bottom:22px}.hero p{font-size:17px;line-height:1.6}
+.profile-summary{padding:10px 0 15px;margin:0;color:var(--muted);font:12px/1.5 Consolas,monospace}.preview-head{line-height:1.4;font-size:12px;min-height:50px;height:auto}
+.noise-readout{grid-template-columns:1fr auto;min-height:45px;height:auto;font-size:12px;line-height:1.6;gap:8px}
+.comparison{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--line);padding:10px 14px;color:var(--muted);font-size:12px;line-height:1.5}.comparison button{min-height:44px;padding:8px 12px;border:1px solid var(--line);background:transparent;white-space:nowrap}.comparison button[aria-pressed=true]{color:var(--acid);border-color:var(--acid)}
+.preset-title{font-size:12px;line-height:1.4}.meter strong{line-height:1}.meter small{font-size:11px}#presets button{min-height:46px}.actions{flex-wrap:wrap}.actions button{min-height:44px}.actions #export{background:var(--acid);color:#172016;border-color:var(--acid)}#preset-description{font-size:12px;line-height:1.7}.preset-panel{padding:20px}
+.controls label{font-size:12px;line-height:1.4;text-transform:none}.controls input,.controls select{min-height:44px}.switch-count{font-size:12px;color:var(--muted);margin:14px 0}.switch{min-height:50px;line-height:1.5;padding:9px 8px}.switch input{width:17px;height:17px;flex:none}.switch strong{font-size:13px}.switch small{display:block;color:var(--clay);font-size:11px;margin-top:3px}.switch:has(input:disabled){color:#adb5a7;cursor:default}.group-title{font-size:12px;line-height:1.5}
+.game-preview.no-player .player,.game-preview.no-monster .monster{opacity:0}
+.game-preview.no-rain .rain,.game-preview.no-aura .aura,.game-preview.no-bloom .bloom,.game-preview.no-mtx .mtx,.game-preview.no-particles .particle{animation:none}
+button:hover:not(:disabled){border-color:var(--acid)}button:disabled{opacity:.45;cursor:default}#status{min-height:20px}#status:empty{min-height:0}summary{min-height:48px;line-height:1.5}
+@media(max-width:760px){main{padding-top:26px}.tool-tabs{margin-bottom:25px}.hero h1{font-size:53px}.hero p{font-size:15px;margin-top:18px}.profile-summary{font-size:11px}.preview-head{padding:12px;font-size:11px}.game-preview{height:260px}.noise-readout{grid-template-columns:1fr;padding:12px}.noise-readout strong{grid-column:auto}.comparison{align-items:start;flex-direction:column;padding:12px}.comparison button{width:100%}#presets{gap:8px}.preset-panel{padding:16px}.group-control{min-width:0}.switch{padding-left:3px;padding-right:3px}.switch strong{font-size:13px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

@@ -1,3 +1,4 @@
+import { encode as encodeGraphics } from "../model.mjs";
 const alphabet =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 export function checksum(s) {
@@ -18,11 +19,13 @@ export function conflicts(items) {
         }
     return found;
 }
-export function encode(items) {
+export function encode(items, graphics = null, settings = null) {
     if (conflicts(items).length)
         throw Error(
             "Two effects overwrite the same base asset. Remove one first.",
         );
+    if (graphics && settings)
+        return encodeGraphics(graphics.mode, graphics.chosen, settings, items.map((i) => i.Key));
     const body = ["normal", "", "", items.map((i) => i.Key).join(",")].join(
             "\n",
         ),

@@ -2,7 +2,7 @@ const alphabet =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 const checksum = (s) =>
     alphabet[[...s].reduce((n, c) => (n + c.charCodeAt(0)) & 63, 0)];
-export function encode(mode, categories, settings) {
+export function encode(mode, categories, settings, skins = []) {
     const preset = settings.presets.find((p) => p.key === mode);
     if (!preset) throw Error("Unknown preset");
     const known = new Set(settings.categories.map((c) => c.key));
@@ -13,6 +13,7 @@ export function encode(mode, categories, settings) {
             mode,
             categories.filter((c) => !base.has(c)).join(","),
             preset.categories.filter((c) => !have.has(c)).join(","),
+            skins.join(","),
         ];
     while (fields.length > 1 && !fields.at(-1)) fields.pop();
     const bytes = new TextEncoder().encode("R" + fields.join("\n")),
@@ -54,7 +55,7 @@ export async function decode(code, settings) {
         known = new Set(settings.categories.map((c) => c.key));
     if (categories.some((c) => !known.has(c)))
         throw Error("Code uses categories absent from this version");
-    return { mode, categories, extra: f.slice(3).some(Boolean) };
+    return { mode, categories, skins: (f[3] || "").split(",").filter(Boolean), extra: f.slice(4).some(Boolean) };
 }
 export function compare(base, chosen) {
     return {

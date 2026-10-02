@@ -1,3 +1,5 @@
-See the [repository guide](../../README.md) for the working app, actual datasets and validation commands.
+# Cosmetics workspace
 
-[Open the Smoothtato cosmetics catalogue](https://lolstar123.github.io/smoothtato-preview/cosmetics/).
+Serve the entire `examples/portfolio` directory and open `/cosmetics/`. The catalogue uses shared graphics/profile modules from its parent directory.
+
+[Repository guide](../../../README.md) ? [Provenance](../../../PROVENANCE.md). Either workspace imports and exports a combined graphics and cosmetics profile.

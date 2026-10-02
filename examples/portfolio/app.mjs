@@ -1,4 +1,6 @@
 import { encode, decode, compare } from "./model.mjs";
+import { conflicts } from "./cosmetics/model.mjs";
+import { graphicsProfile, effectProfile, saveGraphics, saveEffects, importedEffects } from "./profile.mjs";
 const $ = (s) => document.querySelector(s),
     esc = (s) =>
         String(s ?? "").replace(
@@ -12,10 +14,14 @@ const $ = (s) => document.querySelector(s),
                     "'": "&#39;",
                 })[c],
         );
-let settings,
+let settings, catalogue,
     mode = "safe",
-    chosen = [];
+    chosen = [],
+    comparing = false;
+document.querySelectorAll("button, input, select, textarea").forEach((el) => el.disabled = true);
 function render() {
+    const focus = document.activeElement?.dataset;
+    const focusKey = focus?.key, focusPreset = focus?.preset;
     const preset = settings.presets.find((p) => p.key === mode),
         diff = compare(preset.categories, chosen),
         q = $("#search").value.toLowerCase(),
@@ -27,8 +33,7 @@ function render() {
         )
         .join("");
     $("#preset-description").textContent = preset.description.split(".")[0] + ".";
-    $("#selected-count").textContent = chosen.length;
-    const preview = $("#game-preview"), has = (...keys) => keys.some((key) => chosen.includes(key));
+    const preview = $("#game-preview"), has = (...keys) => !comparing && keys.some((key) => chosen.includes(key));
     preview.classList.toggle("no-rain", has("rain", "particlesonly", "petexcept", "all"));
     preview.classList.toggle("no-fog", has("fogoff", "noshadow", "smokeblack", "enviro", "all"));
     preview.classList.toggle("no-bloom", has("bloomkill", "emissiveoff", "killlights", "all"));
@@ -40,9 +45,14 @@ function render() {
     preview.classList.toggle("no-particles", has("attackfx", "particlesonly", "petexcept", "all"));
     preview.classList.toggle("no-aura", has("auras", "all"));
     preview.classList.toggle("blackout", has("terrainmesh", "fullblackflat"));
-    const remaining = settings.categories.length - chosen.length;
-    $("#preview-state").textContent = `${remaining} visual systems left on`;
-    document.documentElement.style.setProperty("--noise", String(Math.max(.07, remaining / settings.categories.length)));
+    preview.classList.toggle("no-player", has("playerblack"));
+    preview.classList.toggle("no-monster", has("monsterblack"));
+    const layers = ["rain", "fog", "bloom", "doodads", "corpses", "other-player", "water", "mtx", "particles", "aura", "player", "monster"];
+    const visible = layers.filter((layer) => !preview.classList.contains("no-" + layer)).length;
+    $("#preview-state").textContent = comparing ? "Original comparison" : preset.label + (diff.added.length || diff.removed.length ? " / custom" : "");
+    $("#scene-layers").textContent = `${visible} of ${layers.length} illustrated groups visible`;
+    $("#compare").setAttribute("aria-pressed", comparing);
+    $("#compare").textContent = comparing ? "Show my graphics" : "Compare Original";
     $("#differences").textContent =
         diff.added.length || diff.removed.length
             ? `+${diff.added.length} / −${diff.removed.length} from preset`
@@ -70,15 +80,17 @@ function render() {
         [...groups]
             .map(
                 ([g, cats]) =>
-                    `<h3 class="group-title">${esc(g)}</h3>${cats.map((c) => `<label class="switch"><input type="checkbox" data-key="${c.key}" ${c.unavailable ? "disabled" : ""} ${chosen.includes(c.key) ? "checked" : ""}><span><strong>${esc(c.label)}</strong></span></label>`).join("")}`,
+                    `<h3 class="group-title">${esc(g)}</h3>${cats.map((c) => `<label class="switch"><input type="checkbox" data-key="${c.key}" ${c.unavailable ? "disabled" : ""} ${chosen.includes(c.key) ? "checked" : ""}><span><strong>${esc(c.label)}</strong>${c.unavailable ? '<small>Unavailable in the source version</small>' : ''}</span></label>`).join("")}`,
             )
             .join("") || '<p class="note">No switches match these filters.</p>';
-    try {
-        localStorage.setItem(
-            "smoothtato-visual-profile",
-            JSON.stringify({ mode, chosen }),
-        );
-    } catch {}
+    const shown = [...groups.values()].reduce((n, cats) => n + cats.length, 0);
+    $("#switch-count").textContent = `${shown} of ${settings.categories.length} settings shown. Checked switches apply the named change.`;
+    saveGraphics(mode, chosen);
+    const effects = effectProfile(catalogue);
+    $("#profile-summary").textContent = `${chosen.length} graphics changes / ${effects.length} cosmetic effects in this profile`;
+    $("#export").disabled = !!conflicts(effects).length;
+    if (focusKey) $(`[data-key="${CSS.escape(focusKey)}"]`)?.focus({ preventScroll: true });
+    else if (focusPreset) $(`[data-preset="${CSS.escape(focusPreset)}"]`)?.focus({ preventScroll: true });
     window.__smooth = {
         ready: true,
         total: settings.categories.length,
@@ -91,7 +103,9 @@ $("#presets").onclick = (e) => {
     if (!b) return;
     mode = b.dataset.preset;
     chosen = [...settings.presets.find((p) => p.key === mode).categories];
+    comparing = false;
     render();
+    $("#status").textContent = settings.presets.find((p) => p.key === mode).label + " graphics selected. Cosmetic effects are kept.";
 };
 $("#categories").onchange = (e) => {
     const key = e.target.dataset.key;
@@ -104,57 +118,53 @@ $("#categories").onchange = (e) => {
 $("#search").oninput = render;
 $("#group").onchange = render;
 $("#filter").onchange = render;
+$("#compare").onclick = () => { comparing = !comparing; render(); };
 $("#restore").onclick = () => {
     mode = "normal";
     chosen = [];
+    comparing = false;
     render();
-    $("#status").textContent = "reset.";
+    $("#status").textContent = "Restored Original graphics. Cosmetic effects are kept.";
 };
 $("#export").onclick = () => {
-    const code = encode(mode, chosen, settings),
+    const effects = effectProfile(catalogue);
+    if (conflicts(effects).length) {
+        $("#status").textContent = "Remove conflicting effects in Cosmetics before exporting.";
+        return;
+    }
+    const code = encode(mode, chosen, settings, effects.map((r) => r.Key)),
         url = URL.createObjectURL(new Blob([code], { type: "text/plain" })),
         a = document.createElement("a");
     a.href = url;
     a.download = "smoothtato-config.txt";
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-    $("#status").textContent = "preset exported.";
+    $("#status").textContent = `Exported ${chosen.length} graphics changes and ${effects.length} cosmetic effects.`;
 };
 $("#import").onclick = async () => {
     try {
         const r = await decode($("#code").value, settings);
+        if (r.extra) throw Error("This code includes settings this browser cannot edit. The current profile has been kept.");
+        const effects = importedEffects(r.skins, catalogue);
+        if (conflicts(effects).length) throw Error("This code contains conflicting effects. The current profile has been kept.");
         mode = r.mode;
         chosen = r.categories;
+        saveEffects(effects);
         render();
-        $("#status").textContent = "preset imported.";
+        $("#status").textContent = `Imported ${chosen.length} graphics changes and ${effects.length} cosmetic effects.`;
     } catch (e) {
         $("#status").textContent = e.message;
     }
 };
 try {
-    const r = await fetch("data/settings.json");
-    if (!r.ok) throw Error("Settings could not load");
+    const [r, c] = await Promise.all([fetch("data/settings.json"), fetch("cosmetics/data/catalogue.json")]);
+    if (!r.ok || !c.ok) throw Error("The settings or effects catalogue could not load. Reload to retry.");
     settings = await r.json();
-    chosen = [...settings.presets.find((p) => p.key === mode).categories];
-    try {
-        const old = JSON.parse(
-            localStorage.getItem("smoothtato-visual-profile"),
-        );
-        if (
-            old &&
-            settings.presets.some((p) => p.key === old.mode) &&
-            Array.isArray(old.chosen) &&
-            old.chosen.every((k) =>
-                settings.categories.some((c) => c.key === k),
-            )
-        ) {
-            mode = old.mode;
-            chosen = old.chosen;
-        }
-    } catch {}
-    $("#provenance").textContent = settings.source;
+    catalogue = await c.json();
+    ({ mode, chosen } = graphicsProfile(settings));
+    $("#provenance").textContent = "68 source settings and five presets. Browser exports do not write game files.";
+    document.querySelectorAll("button, input, select, textarea").forEach((el) => el.disabled = false);
     render();
 } catch (e) {
-    $("#status").textContent = e.message;
-    throw e;
+    $("#status").textContent = "The settings or effects catalogue could not load. Reload to retry.";
 }

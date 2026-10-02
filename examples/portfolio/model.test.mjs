@@ -48,7 +48,9 @@ test("wire format uses real newline-delimited preset deltas", async () => {
 test("desktop deflate codes, extra fields and corruption", async () => {
     const r = await decode(pack("normal\nrain\n\narc-skin"), settings);
     assert.deepEqual(r.categories, ["rain"]);
-    assert.equal(r.extra, true);
+    assert.deepEqual(r.skins, ["arc-skin"]);
+    assert.equal(r.extra, false);
+    assert.equal((await decode(pack("normal\nrain\n\narc-skin\nunsupported-field"), settings)).extra, true);
     await assert.rejects(() => decode("STATO1-AAAA", settings));
     await assert.rejects(() =>
         decode(pack("normal\nunknown-category"), settings),
